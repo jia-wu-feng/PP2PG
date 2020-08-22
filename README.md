@@ -2,12 +2,12 @@
 Phasing pipeline based on two parental genomes
 
 Require: 
-MUMmer     Version:4.0.0beta2 (https://github.com/mummer4/mummer)
-Bismark    Version:v0.22.1    (https://github.com/FelixKrueger/Bismark)
-minimap2   Version:2.17       (https://github.com/lh3/minimap2)
-HISAT2     Version:2.1.0      (http://ccb.jhu.edu/software/hisat2/manual.shtml)
-pysam      Version:0.15.2     (https://pypi.org/project/pysam/)     
-SAMtools   Version:1.6        (http://samtools.sourceforge.net/)  
+  MUMmer     Version:4.0.0beta2 (https://github.com/mummer4/mummer)
+  Bismark    Version:v0.22.1    (https://github.com/FelixKrueger/Bismark)
+  minimap2   Version:2.17       (https://github.com/lh3/minimap2)
+  HISAT2     Version:2.1.0      (http://ccb.jhu.edu/software/hisat2/manual.shtml)
+  pysam      Version:0.15.2     (https://pypi.org/project/pysam/)     
+  SAMtools   Version:1.6        (http://samtools.sourceforge.net/)  
 
 
 1.Mapping:
