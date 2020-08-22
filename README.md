@@ -15,15 +15,15 @@ Require:
 
 1.Mapping:
 
-1) The type of Iso-seq reads was used minimap2 software for alignment:
+1) The type of Iso-Seq reads was used minimap2 software for alignment:
 
        minimap2 -ax splice -uf --secondary=no -C5 -O6,24 -B4 --MD ref query > results.sam      
 
-2) The type of RNA-seq paired end reads was utilized hisat2 software for alignment:
+2) The type of RNA-Seq paired end reads was utilized hisat2 software for alignment:
 
        hisat2 --dta -k 1 -x genome_index -1 query_1 -2 query_2 -S out.sam
 
-3) The type of WGBS reads was used Bismark software for alignment:
+3) The type of BS-Seq reads was used Bismark software for alignment:
       
        bismark --bowtie2 -genome genome_index -1 query_1 -2 query_2
     Note: Our pipeline only considers all unique mapped results in the current genomes in BS-Seq. Ambiguous reads are regarded 
