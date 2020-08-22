@@ -30,10 +30,10 @@ phasing.py --pt=<phase_type> --g1=<genome1_alignment> --g2=<genome2_alignment>
     The bam/sam file that the reads aligned to first genome.
 
     The detailed methods were as follows:
-    1) The type of Iso-seq reads was used minimap2 software for alignment.
+    1) The type of Iso-Seq reads was used minimap2 software for alignment.
      eg. minimap2 -ax splice -uf --secondary=no -C5 -O6,24 -B4 --MD ref query > results.sam      
 
-    2) The type of RNA-seq paired end reads was utilized hisat2 software for alignment.
+    2) The type of RNA-Seq paired end reads was utilized hisat2 software for alignment.
      eg. hisat2 --dta -k 1 -x genome_index -1 query_1 -2 query_2 -S out.sam
 
     3) The type of BS-Seq reads was used Bismark software for alignment.
