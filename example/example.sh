@@ -18,7 +18,7 @@ minimap2 -ax splice -uf --secondary=no -C5 -O6,24 -B4 --MD ../ZS97.fa ../Isoseq.
 ../../tool/phasing.py --pt=Isoseq --g1=MH63.sam --g2=ZS97.sam --snp=MH63_ZS97.snp --gop1=MH63 --gop2=ZS97
 
 cd ../
-###WGBS phasing
+###BS-Seq phasing
 mkdir BSseq
 cd BSseq
 
