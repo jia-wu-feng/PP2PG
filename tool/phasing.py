@@ -30,10 +30,10 @@ phasing.py --pt=<phase_type> --g1=<genome1_alignment> --g2=<genome2_alignment>
     The bam/sam file that the reads aligned to first genome.
 
     The detailed methods were as follows:
-    1) The type of Iso-Seq reads was used minimap2 software for alignment.
+    1) The type of Iso-seq reads was used minimap2 software for alignment.
      eg. minimap2 -ax splice -uf --secondary=no -C5 -O6,24 -B4 --MD ref query > results.sam      
 
-    2) The type of RNA-Seq paired end reads was utilized hisat2 software for alignment.
+    2) The type of RNA-seq paired end reads was utilized hisat2 software for alignment.
      eg. hisat2 --dta -k 1 -x genome_index -1 query_1 -2 query_2 -S out.sam
 
     3) The type of BS-Seq reads was used Bismark software for alignment.
@@ -165,17 +165,22 @@ def makefile(gop1,gop2):
     if not os.path.exists(gop1):
         os.mkdir(gop1)
     else:
-        print("Warning:"+gop1+" exit")
+        print("Warning:"+gop1+" exit.\n")
     if not os.path.exists(gop2):
         os.mkdir(gop2)
     else:
-        print("Warning:"+gop2+" exit")
+        print("Warning:"+gop2+" exit.\n")
     return
 
 def exitfile(filename):
     if os.path.exists(filename):
-        print("Warning:"+filename+" file exit, the result will be overwritten")
-        os.system("rm "+filename)
+        try:
+            os.remove(filename)
+        except Exception as e:
+            print(e)
+            sys.exit(2)
+        else:
+            print("Warning:"+filename+" file exit, the result will be overwritten.\n")
     return
 
 def trans_nut(a):
@@ -563,15 +568,15 @@ def main():
 
     snpsupport = open(gop1+"_"+gop2+"_"+"support.txt","w")
 
-    g1_g1readsfile = pysam.AlignmentFile(gop1+"_genome/"+gop1+"reads.sam", "w", template=tmp_all,threads=int(sth))
-    g1_g2readsfile = pysam.AlignmentFile(gop1+"_genome/"+gop2+"reads.sam", "w", template=tmp_all,threads=int(sth))
-    g1_unknowreadsfile = pysam.AlignmentFile(gop1+"_genome/"+"unknownreads.sam", "w", template=tmp_all,threads=int(sth))
-    g1_g1onlyreadsfile = pysam.AlignmentFile(gop1+"_genome/"+gop1+"onlyreads.sam", "w", template=tmp_all,threads=int(sth))
+    g1_g1readsfile = pysam.AlignmentFile(gop1+"_genome/"+gop1+"reads.sam", "w", template=tmp_all,threads=int(sth),add_sam_header=False)
+    g1_g2readsfile = pysam.AlignmentFile(gop1+"_genome/"+gop2+"reads.sam", "w", template=tmp_all,threads=int(sth),add_sam_header=False)
+    g1_unknowreadsfile = pysam.AlignmentFile(gop1+"_genome/"+"unknownreads.sam", "w", template=tmp_all,threads=int(sth),add_sam_header=False)
+    g1_g1onlyreadsfile = pysam.AlignmentFile(gop1+"_genome/"+gop1+"onlyreads.sam", "w", template=tmp_all,threads=int(sth),add_sam_header=False)
 
-    g2_g1readsfile = pysam.AlignmentFile(gop2+"_genome/"+gop1+"reads.sam", "w", template=tmp_all,threads=int(sth))
-    g2_g2readsfile = pysam.AlignmentFile(gop2+"_genome/"+gop2+"reads.sam", "w", template=tmp_all,threads=int(sth))
-    g2_unknowreadsfile = pysam.AlignmentFile(gop2+"_genome/"+"unknownreads.sam", "w", template=tmp_all,threads=int(sth))
-    g2_g2onlyreadsfile = pysam.AlignmentFile(gop2+"_genome/"+gop2+"onlyreads.sam", "w", template=tmp_all,threads=int(sth))
+    g2_g1readsfile = pysam.AlignmentFile(gop2+"_genome/"+gop1+"reads.sam", "w", template=tmp_all,threads=int(sth),add_sam_header=False)
+    g2_g2readsfile = pysam.AlignmentFile(gop2+"_genome/"+gop2+"reads.sam", "w", template=tmp_all,threads=int(sth),add_sam_header=False)
+    g2_unknowreadsfile = pysam.AlignmentFile(gop2+"_genome/"+"unknownreads.sam", "w", template=tmp_all,threads=int(sth),add_sam_header=False)
+    g2_g2onlyreadsfile = pysam.AlignmentFile(gop2+"_genome/"+gop2+"onlyreads.sam", "w", template=tmp_all,threads=int(sth),add_sam_header=False)
     
     stat_number={"g1":0,"g2":0,"g1only":0,"g2only":0,"unk":0,"single":0,"discarded":0}
 
@@ -669,29 +674,55 @@ def main():
 
     g1file=[gop1+"_genome/"+gop1+"reads",gop1+"_genome/"+gop2+"reads",gop1+"_genome/unknownreads",gop1+"_genome/"+gop1+"onlyreads"]
     g2file=[gop2+"_genome/"+gop1+"reads",gop2+"_genome/"+gop2+"reads",gop2+"_genome/unknownreads",gop2+"_genome/"+gop2+"onlyreads"]
-    PG='@PG\tID:phasing.py\tPN:PP2PG\tVN:1.0.0	CL:"'+' '.join(sys.argv)+'"\n'
+    PG='@PG\tID:phasing.py\tPN:PP2PG\tVN:1.0.0\tCL:'+' '.join(sys.argv)+'\n'
+
+    tmp4=open("tmp4.header","w")
+    tmp4.write(g1_header+PG)
+    tmp4.close()
+    tmp5=open("tmp5.header","w")
+    tmp5.write(g2_header+PG)
+    tmp5.close()
 
     for f in g1file:
         exitfile(f+".bam")
-        ffile=open(f+".sam","r")
-        context=ffile.read()
-        ftmp=open(f+".tmp.sam","w")
-        ftmp.write(context.replace(tmp_bamheader,g1_header+PG))
-        ftmp.close()
-        print("Excuting: samtools view -@ "+sth+" -b -S "+f+".tmp.sam -o "+f+".bam")
-        os.system("samtools view -@ "+sth+" -b -S "+f+".tmp.sam -o "+f+".bam")
-        os.system("rm "+f+".sam "+f+".tmp.sam")
+        exitfile(f+".tmp.sam")
+        try:
+            os.system("cat tmp4.header "+f+".sam >"+f+".tmp.sam")
+            print("Excuting: samtools view -@ "+sth+" -b -S "+f+".tmp.sam -o "+f+".bam\n")
+            os.system("samtools view -@ "+sth+" -b -S "+f+".tmp.sam -o "+f+".bam")
+            os.system("rm "+f+".sam "+f+".tmp.sam")
+        except Exception as e:
+            print(e)
+            sys.exit(2)
+        else:
+            print("*** "+f+".sam converted bam file successfully. ***\n")
     for f in g2file:
         exitfile(f+".bam")
-        ffile=open(f+".sam","r")
-        context=ffile.read()
-        ftmp=open(f+".tmp.sam","w")
-        ftmp.write(context.replace(tmp_bamheader,g2_header+PG))
-        ftmp.close()
-        print("Excuting: samtools view -@ "+sth+" -b -S "+f+".tmp.sam -o "+f+".bam")
-        os.system("samtools view -@ "+sth+" -b -S "+f+".tmp.sam -o "+f+".bam")
-        os.system("rm "+f+".sam "+f+".tmp.sam")
-    os.system("rm tmp1.bam tmp2.bam tmp3.bam tmp_sortname.bam "+gop1+"_"+gop2+"_support.txt")
+        exitfile(f+".tmp.sam")
+        try:
+            os.system("cat tmp5.header "+f+".sam >"+f+".tmp.sam")
+            print("Excuting: samtools view -@ "+sth+" -b -S "+f+".tmp.sam -o "+f+".bam\n")
+            os.system("samtools view -@ "+sth+" -b -S "+f+".tmp.sam -o "+f+".bam")
+            os.system("rm "+f+".sam "+f+".tmp.sam")
+        except Exception as e:
+            print(e)
+            sys.exit(2)
+        else:
+            print("*** "+f+".sam converted bam file successfully. ***\n")
+    try:
+        os.remove("tmp1.bam")
+        os.remove("tmp2.bam")
+        os.remove("tmp3.bam")
+        os.remove("tmp_sortname.bam")
+        os.remove("tmp4.header")
+        os.remove("tmp5.header")
+        os.remove(gop1+"_"+gop2+"_support.txt")
+    except Exception as e:
+        print(e)
+        sys.exit(2)
+    else:
+        print("*** Deleted tmp file successfully. ***\n")
+
     g1samfile.close()
     g2samfile.close()
     tmp_all.close()
