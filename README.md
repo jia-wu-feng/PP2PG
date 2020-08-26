@@ -47,4 +47,4 @@ Require:
 
 4.Output file:
 
-    Two genome-based alignment results file, containing 2 folders. One is the phasing results of g1 genome alignment, which includes: g1-synteny reads, g2-synteny reads, unknown reads, and reads that only mapped to the g1 genome; the other is the phasing results of g2 genome alignment, which includes: g1-synteny reads, g2-synteny reads, unknown reads, and reads that only mapped to the g2 genome.
+Two genome-based alignment results file, containing 2 folders. One is the phasing results of g1 genome alignment, which includes: g1-synteny reads, g2-synteny reads, unknown reads, and reads that only mapped to the g1 genome; the other is the phasing results of g2 genome alignment, which includes: g1-synteny reads, g2-synteny reads, unknown reads, and reads that only mapped to the g2 genome.
