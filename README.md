@@ -12,7 +12,7 @@ Require:
   5) pysam      Version:0.15.2     (https://pypi.org/project/pysam/)     
   6) SAMtools   Version:1.6        (http://samtools.sourceforge.net/)  
 
-![image1](https://github.com/jia-wu-feng/PP2PG/img/img1.png)
+![image1](https://github.com/jia-wu-feng/PP2PG/blob/master/img/img1.png)
 The phasing pipeline of hybrid based on two parental genomes. It mainly consists of four steps: (i) Mapping, (ii) SNP Calling, (iii) Phasing and (iv) Classification.
 
 1.Mapping:
