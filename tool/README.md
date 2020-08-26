@@ -51,15 +51,15 @@ Require:
 Output file:
 
     Two genome-based alignment results file, containing 2 folders. One is the phasing results of g1 genome alignment, 
-    which includes: g1 reads, g2 reads, unknown reads, and reads that only mapped to the g1 genome; the other is the 
-    phasing results of g2 genome alignment, which includes: g1 reads, g2 reads, unknown reads, and reads that only 
-    only mapped to the g2 genome.
-    g1_genome/g1reads.bam --- g1 reads mapped to g1 genome
-    g1_genome/g2reads.bam --- g2 reads mapped to g1 genome
+    which includes: g1-synteny reads, g2-synteny reads, unknown reads, and reads that only mapped to the g1 genome; the other is the 
+    phasing results of g2 genome alignment, which includes: g1-synteny reads, g2-synteny reads, unknown reads, and reads that only 
+    mapped to the g2 genome.
+    g1_genome/g1reads.bam --- g1-synteny reads mapped to g1 genome
+    g1_genome/g2reads.bam --- g2-synteny reads mapped to g1 genome
     g1_genome/unknowreads.bam --- unknown reads mapped to g1 genome
     g1_genome/g1onlyreads.bam --- reads that only mapped to the g1 genome
-    g2_genome/g1reads.bam --- g1 reads mapped to g2 genome
-    g2_genome/g2reads.bam --- g2 reads mapped to g2 genome
+    g2_genome/g1reads.bam --- g1-synteny reads mapped to g2 genome
+    g2_genome/g2reads.bam --- g2-synteny reads mapped to g2 genome
     g2_genome/unknowreads.bam --- unknown reads mapped to g2 genome
     g2_genome/g2onlyreads.bam --- reads that only mapped to the g2 genome
 
