@@ -96,7 +96,7 @@ Identification of alternative splicing
 
 (3) SUPPA2 was utilized to identify the alternative splicing (AS) from the transcripts which corrected and assembled by TAPIS (Trincado et al. 2018). 
 
-Identification of ASE genes
+Identification of allele-specific expressed (ASE) genes
 
 (1) HTSeq (Anders, Pyl, and Huber 2015) was employed for counting the number of full-length transcripts. 
 
@@ -110,7 +110,7 @@ Identification of ASE genes and trans-regulation
 
 (2) HTSeq (Anders, Pyl, and Huber 2015) was used to count reads for every sample after phasing. 
 
-(3) DESeq2 was performed to identify the differential expression between the parents and progeny(reads≥5,qvalue≤0.05 and |log2FoldChange|>1).
+(3) DESeq2 was performed to identify the differential expression (reads ≥5, qvalue ≤0.05 and |log2FoldChange| > 1).
 
 Construction the allele co-expression network of SY63
 
@@ -122,7 +122,7 @@ Construction the allele co-expression network of SY63
 
 BS-Seq
 
-Identification of differentially methylated regions
+Identification of allele-specific DNA methylation (ASM)
 
 (1) samtools was used to sort bam files by name after phasing. 
 
