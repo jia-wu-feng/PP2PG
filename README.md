@@ -83,3 +83,64 @@ Example:
     Only mapped ZS97 reads: 3
     
     Separation Rate:        83.23%
+
+5.More analysis:
+
+Iso-Seq:
+
+Identification of alternative splicing
+
+(1) Samtools was used to convert the phasing bam files into sequence files. 
+
+(2) Then alignPacBio.py (TAPIS) was applied for correction, and run_tapis.py was applied for assembling the corrected transcripts (Abdel-Ghany et al. 2016). 
+
+(3) SUPPA2 was utilized to identify the alternative splicing (AS) from the transcripts which corrected and assembled by TAPIS (Trincado et al. 2018). 
+
+Identification of ASE genes
+
+(1) HTSeq (Anders, Pyl, and Huber 2015) was employed for counting the number of full-length transcripts. 
+
+(2) To identify the gene bias, binom.test in R language was applied for testing whether the ratio of alleles deviated from 0.5 ( total reads≥5,qvalue≤0.05 ).
+
+RNA-Seq:
+
+Identification of ASE genes and trans-regulation
+
+(1) Samtools was used to sort bam files by name.
+
+(2) HTSeq (Anders, Pyl, and Huber 2015) was used to count reads for every sample after phasing. 
+
+(3) DESeq2 was performed to identify the differential expression between the parents and progeny(reads≥5,qvalue≤0.05 and |log2FoldChange|>1).
+
+Construction the allele co-expression network of SY63
+
+(1) StringTie (Pertea et al. 2015) was utilized to calculate the expression of two parental alleles in the same genome. 
+
+(2) The two files of allele labels were modified and merged these two files into one file. 
+
+(3) An allele co-expression network was constructed based on Weighted Gene Co-expression Network Analysis (WGCNA) (Langfelder and Horvath 2008).
+
+BS-Seq
+
+Identification of differentially methylated regions
+
+(1) samtools was used to sort bam files by name after phasing. 
+
+(2) The bismark_methylation_extractor was utilized to recall methylations based on the MH63 genome with the parameters (-p --gzip --bedGraph --comprehensive --cytosine_report -CX) (Krueger and Andrews 2011). 
+
+(3) Cytosine report can be used to obtain each C methylation and unmethylation situation. Users can calculate the differential methylation sites and regions.
+
+
+Reference
+
+Abdel-Ghany, S. E., M. Hamilton, J. L. Jacobi, P. Ngam, N. Devitt, F. Schilkey, A. Ben-Hur, and A. S. Reddy. 2016. 'A survey of the sorghum transcriptome using single-molecule long reads', Nat Commun, 7: 11706.
+
+Anders, S., P. T. Pyl, and W. Huber. 2015. 'HTSeq--a Python framework to work with high-throughput sequencing data', Bioinformatics, 31: 166-9.
+
+Krueger, F., and S. R. Andrews. 2011. 'Bismark: a flexible aligner and methylation caller for Bisulfite-Seq applications', Bioinformatics, 27: 1571-2.
+
+Langfelder, P., and S. Horvath. 2008. 'WGCNA: an R package for weighted correlation network analysis', BMC Bioinformatics, 9: 559.
+
+Pertea, M., G. M. Pertea, C. M. Antonescu, T. C. Chang, J. T. Mendell, and S. L. Salzberg. 2015. 'StringTie enables improved reconstruction of a transcriptome from RNA-seq reads', Nat Biotechnol, 33: 290-5.
+
+Trincado, J. L., J. C. Entizne, G. Hysenaj, B. Singh, M. Skalic, D. J. Elliott, and E. Eyras. 2018. 'SUPPA2: fast, accurate, and uncertainty-aware differential splicing analysis across multiple conditions', Genome Biol, 19: 40.
