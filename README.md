@@ -76,11 +76,11 @@ Example:
     Note: When calculating the Separation Rate, the reads which are unmapped in two parental genomes are discarded.
     
     Type of reads:  Read Counts
-    MH63 reads:     129
-    ZS97 reads:      129
-    Unknown reads:  47
-    Only mapped MH63 reads: 2
-    Only mapped ZS97 reads: 3
+    MH63-synteny reads:	129
+    ZS97-synteny reads:	129
+    Unknown reads:	47
+    MH63-only reads:	2
+    ZS97-only reads:	3
     
     Separation Rate:        83.23%
 
