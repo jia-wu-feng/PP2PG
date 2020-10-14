@@ -72,17 +72,17 @@ phasing.py --pt=<phase_type> --g1=<genome1_alignment> --g2=<genome2_alignment>
     Output file
     ===========
     Two genome-based alignment results file, containing 2 folders. One is the phasing results of g1 genome alignment, 
-    which includes: g1-synteny reads, g2-synteny reads, unknown reads, and reads that only mapped to the g1 genome; 
+    which includes: g1-synteny reads, g2-synteny reads, unknown reads, and reads that only mapped to the g1 genome (g1-only reads); 
     the other is the phasing results of g2 genome alignment, which includes: g1-synteny reads, g2-synteny reads, unknown reads, 
-    and reads that only mapped to the g2 genome.
+    and reads that only mapped to the g2 genome (g2-only reads).
     g1_genome/g1reads.bam --- g1-synteny reads mapped to g1 genome
     g1_genome/g2reads.bam --- g2-synteny reads mapped to g1 genome
     g1_genome/unknowreads.bam --- unknown reads mapped to g1 genome
-    g1_genome/g1onlyreads.bam --- reads that only mapped to the g1 genome
+    g1_genome/g1onlyreads.bam --- reads that only mapped to the g1 genome (g1-only reads)
     g2_genome/g1reads.bam --- g1-synteny reads mapped to g2 genome
     g2_genome/g2reads.bam --- g2-synteny reads mapped to g2 genome
     g2_genome/unknowreads.bam --- unknown reads mapped to g2 genome
-    g2_genome/g2onlyreads.bam --- reads that only mapped to the g2 genome
+    g2_genome/g2onlyreads.bam --- reads that only mapped to the g2 genome (g2-only reads)
 
     g1_g2_Phasing_Report.txt --- Final Phasing Reads Report
 
@@ -745,8 +745,11 @@ Note: When calculating the Separation Rate, the reads which are unmapped in two 
 
 Type of reads:\tRead Counts
 """
-    report=gop1+" reads:\t"+str(g1reads_stats)+"\n"+gop2+" reads:\t "+str(g2reads_stats)+"\n"+"Unknown reads:\t"+str(unknowreads_stats)+"\n"+\
-           "Only mapped "+gop1+" reads:\t"+str(g1onlyreads_stats)+"\n"+"Only mapped "+gop2+" reads:\t"+str(g2onlyreads_stats)+"\n\n"+\
+    report=gop1+"-synteny reads:\t"+str(g1reads_stats)+"\n"+\
+           gop2+"-synteny reads:\t "+str(g2reads_stats)+"\n"+\
+           "Unknown reads:\t"+str(unknowreads_stats)+"\n"+\
+           gop1+"-only reads:\t"+str(g1onlyreads_stats)+"\n"+\
+           gop2+"-only reads:\t"+str(g2onlyreads_stats)+"\n\n"+\
            "Separation Rate:\t"+str(round((float(g1reads_stats)+float(g2reads_stats))/(float(g1reads_stats)+float(g2reads_stats)+float(g1onlyreads_stats)+float(g2onlyreads_stats)+float(unknowreads_stats))*100,2))+"%\n"
     file_report=open(gop1+"_"+gop2+"_Phasing_Report.txt","w")
     file_report.write(head+report)
