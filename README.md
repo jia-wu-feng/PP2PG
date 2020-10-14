@@ -50,17 +50,17 @@ Fig.1 The phasing pipeline based on two parental genomes (PP2PG). It mainly cons
 
 4.Output file:
 
-Two genome-based alignment results file, containing 2 folders. One is the phasing results of g1 genome alignment, which includes: g1-synteny reads, g2-synteny reads, unknown reads, and reads that only mapped to the g1 genome; the other is the phasing results of g2 genome alignment, which includes: g1-synteny reads, g2-synteny reads, unknown reads, and reads that only mapped to the g2 genome.
+Two genome-based alignment results file, containing 2 folders. One is the phasing results of g1 genome alignment, which includes: g1-synteny reads, g2-synteny reads, unknown reads, and reads that only mapped to the g1 genome (g1-only reads); the other is the phasing results of g2 genome alignment, which includes: g1-synteny reads, g2-synteny reads, unknown reads, and reads that only mapped to the g2 genome (g2-only reads).
 
     g1_genome/g1reads.bam --- g1-synteny reads mapped to g1 genome
     g1_genome/g2reads.bam --- g2-synteny reads mapped to g1 genome
     g1_genome/unknowreads.bam --- unknown reads mapped to g1 genome
-    g1_genome/g1onlyreads.bam --- reads that only mapped to the g1 genome
+    g1_genome/g1onlyreads.bam --- reads that only mapped to the g1 genome (g1-only reads)
     
     g2_genome/g1reads.bam --- g1-synteny reads mapped to g2 genome
     g2_genome/g2reads.bam --- g2-synteny reads mapped to g2 genome
     g2_genome/unknowreads.bam --- unknown reads mapped to g2 genome
-    g2_genome/g2onlyreads.bam --- reads that only mapped to the g2 genome
+    g2_genome/g2onlyreads.bam --- reads that only mapped to the g2 genome (g2-only reads)
 
 
 g1_g2_Phasing_Report.txt --- Final Phasing Reads Report
