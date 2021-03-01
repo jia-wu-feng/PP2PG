@@ -22,31 +22,36 @@ phasing.py --pt=<phase_type> --g1=<genome1_alignment> --g2=<genome2_alignment>
     =====================================================
 
     --pt=<phase_type> 
-    Type: Isoseq : Iso-Seq (PacBio Isoform Sequence) 
-          RNAseq : RNA-Seq for paired-end reads 
-          BSseq  : BS-Seq (Bisulfite Sequencing) for paired-end reads
+    Type: Isoseq  : Iso-Seq (PacBio Isoform Sequence) 
+          RNAseq  : RNA-Seq for paired-end reads 
+          BSseq   : BS-Seq (Bisulfite Sequencing) for paired-end reads
+          Riboseq : Ribo-seq (Ribosome Profiling).
+
 
     --g1=<genome1_alignment>
     The bam/sam file that the reads aligned to first genome.
 
     The detailed methods were as follows:
     1) The type of Iso-seq reads was used minimap2 software for alignment.
-     eg. minimap2 -ax splice -uf --secondary=no -C5 -O6,24 -B4 --MD ref query > results.sam      
+     eg. minimap2 -ax splice -uf --secondary=no -C5 -O6,24 -B4 --MD ref query > results.sam
 
     2) The type of RNA-seq paired end reads was utilized hisat2 software for alignment.
      eg. hisat2 --dta -k 1 -x genome_index -1 query_1 -2 query_2 -S out.sam
 
     3) The type of BS-Seq reads was used Bismark software for alignment.
      eg. bismark --bowtie2 -genome genome_index -1 query_1 -2 query_2
-    Note: Our pipeline only considers all unique mapped results in the current genomes in BS-Seq. Ambiguous reads are regarded 
-    as unmaped reads.
+     Note: Our pipeline only considers all unique mapped results in the current genomes in BS-Seq. Ambiguous reads are regarded 
+           as unmaped reads.
+
+    4) The type of Ribo-seq reads was used Tophat2(Bowtie2) software for alignment.
+     eg. tophat2 -N 2 -I 50000 -G gff_file/gtf_file -o prefix genome_index query
 
     --g2=<genome2_alignment> 
     The bam/sam file that the reads aligned to second genome.
 
     --snp=<snpfile> 
     The SNP file was obtained by mummer program which used first genome as reference genome and second genome as query genome.
-     eg. nucmer --mum --maxgap=500 --mincluster=100 --prefix=g1_g2 g1_genome.fa g1_genome.fa
+     eg. nucmer --mum --maxgap=500 --mincluster=100 --prefix=g1_g2 g1_genome.fa g2_genome.fa
          delta-filter -1 -q -r g1_g2.delta > g1_g2.filter.delta
          show-snps -C -H -I -T -r -l g1_g2.filter.delta > g1_g2.snp
 
@@ -100,7 +105,7 @@ phasing.py --pt=<phase_type> --g1=<genome1_alignment> --g2=<genome2_alignment>
             print(help_str)
             sys.exit()
         elif opt == "--pt":
-            if arg not in ("Isoseq","RNAseq","BSseq"):
+            if arg not in ("Isoseq","RNAseq","BSseq","Riboseq"):
                 print("error:-pt")
                 print(help_str)
                 sys.exit()
@@ -307,9 +312,9 @@ def rnapairreadsphase(samlist,g1snp,g2snp,gop1,gop2):
     unknowtag=0
     supportfile={"g1tag_support":["g1"],"g1tag_unknow_support":["g1_un"],"g2tag_support":["g2"],"g2tag_unknow_support":["g2_un"]}
     if len(samlist["g1_mate1"])==1 and len(samlist["g1_mate2"])==1 and len(samlist["g2_mate1"])==1 and len(samlist["g2_mate2"])==1:
-        if samlist["g1_mate1"][0].is_unmapped and samlist["g1_mate2"][0].is_unmapped and not samlist["g2_mate1"][0].is_unmapped and not samlist["g2_mate2"][0].is_unmapped:
+        if (not samlist["g1_mate1"][0].is_unmapped) and ( not samlist["g1_mate2"][0].is_unmapped) and samlist["g2_mate1"][0].is_unmapped and samlist["g2_mate2"][0].is_unmapped:
             reads_type="g1only"
-        elif not samlist["g1_mate1"][0].is_unmapped and not samlist["g1_mate2"][0].is_unmapped and samlist["g2_mate1"][0].is_unmapped and samlist["g2_mate2"][0].is_unmapped:
+        elif samlist["g1_mate1"][0].is_unmapped and samlist["g1_mate2"][0].is_unmapped and (not samlist["g2_mate1"][0].is_unmapped) and (not samlist["g2_mate2"][0].is_unmapped):
             reads_type="g2only"
         elif samlist["g1_mate1"][0].is_unmapped and samlist["g1_mate2"][0].is_unmapped and samlist["g2_mate1"][0].is_unmapped and samlist["g2_mate2"][0].is_unmapped:
             reads_type="discarded"
@@ -389,9 +394,9 @@ def wgbsreadsphase(samlist,g1snp,g2snp,gop1,gop2):
         samlist["g2_mate1"][0].get_tag("XM",with_value_type = True)[1]=="C" or\
         samlist["g2_mate2"][0].get_tag("XM",with_value_type = True)[1]=="C":
             reads_type="discarded"
-        elif samlist["g1_mate1"][0].is_unmapped and samlist["g1_mate2"][0].is_unmapped and not samlist["g2_mate1"][0].is_unmapped and not samlist["g2_mate2"][0].is_unmapped:
+        elif (not samlist["g1_mate1"][0].is_unmapped) and (not samlist["g1_mate2"][0].is_unmapped) and samlist["g2_mate1"][0].is_unmapped and samlist["g2_mate2"][0].is_unmapped:
             reads_type="g1only"
-        elif not samlist["g1_mate1"][0].is_unmapped and not samlist["g1_mate2"][0].is_unmapped and samlist["g2_mate1"][0].is_unmapped and samlist["g2_mate2"][0].is_unmapped:
+        elif samlist["g1_mate1"][0].is_unmapped and samlist["g1_mate2"][0].is_unmapped and (not samlist["g2_mate1"][0].is_unmapped ) and ( not samlist["g2_mate2"][0].is_unmapped) :
             reads_type="g2only"
         elif samlist["g1_mate1"][0].is_unmapped and samlist["g1_mate2"][0].is_unmapped and samlist["g2_mate1"][0].is_unmapped and samlist["g2_mate2"][0].is_unmapped:
             reads_type="discarded"
@@ -464,6 +469,8 @@ def readswrite(samlist,readt,support,g1_g1readsfile,g1_g2readsfile,g1_unknowread
         for rp in samlist["g1"]:
             rp.query_name=rp.query_name.replace("_g1","")
             g1_unknowreadsfile.write(rp)
+            snpsupport.write(rp.query_name+"\t"+str(",".join(support["g1tag_support"]))+"\t"+"\t"+str(",".join(support["g1tag_unknow_support"]))+"\t"+\
+                             str(",".join(support["g2tag_support"]))+"\t"+str(",".join(support["g2tag_unknow_support"]))+"\n")
         for rp in samlist["g2"]:
             rp.query_name=rp.query_name.replace("_g2","")
             g2_unknowreadsfile.write(rp)
@@ -530,6 +537,57 @@ def pairsreadswrite(samlist,readt,support,g1_g1readsfile,g1_g2readsfile,g1_unkno
             rp.query_name=rp.query_name.replace("_g2","")
             g2_g2onlyreadsfile.write(rp)
     return
+
+def riboreadsphase(samlist,g1snp,g2snp,gop1,gop2):
+    reads_type=""
+    g1tag=0
+    g2tag=0
+    unknowtag=0
+    supportfile={"g1tag_support":["g1"],"g1tag_unknow_support":["g1_un"],"g2tag_support":["g2"],"g2tag_unknow_support":["g2_un"]}
+    if len(samlist["g1"])==1 and len(samlist["g2"])==1:
+        if samlist["g1"][0].is_unmapped and samlist["g2"][0].is_unmapped:
+            reads_type="discarded"
+        elif samlist["g1"][0].is_unmapped and (not samlist["g2"][0].is_unmapped):
+            reads_type="g2only"
+        elif (not samlist["g1"][0].is_unmapped ) and samlist["g2"][0].is_unmapped:
+            reads_type="g1only"
+        else:
+            snp_po=snpcall(samlist["g1"][0])
+            for snp in snp_po:
+                if samlist["g1"][0].reference_name+"_"+str(snp[1]+1) in g1snp:
+                    snplist=g1snp[samlist["g1"][0].reference_name+"_"+str(snp[1]+1)]
+                    if snp[3]==snplist["g2"]:
+                        g2tag+=1
+                        supportfile["g2tag_support"].append(gop1+"_"+samlist["g1"][0].reference_name+"_"+str(int(snp[1])+1))
+                    else:
+                        unknowtag+=1
+                        supportfile["g2tag_unknow_support"].append(gop1+"_"+samlist["g1"][0].reference_name+"_"+str(int(snp[1])+1))
+            snp_po=snpcall(samlist["g2"][0])
+            for snp in snp_po:
+                if samlist["g2"][0].reference_name+"_"+str(snp[1]+1) in g2snp:
+                    snplist=g2snp[samlist["g2"][0].reference_name+"_"+str(snp[1]+1)]
+                    if snp[3]==snplist["g1"]:
+                        g1tag+=1
+                        supportfile["g1tag_support"].append(gop1+"_"+samlist["g2"][0].reference_name+"_"+str(int(snp[1])+1))
+                    else:
+                        unknowtag+=1
+                        supportfile["g1tag_unknow_support"].append(gop1+"_"+samlist["g2"][0].reference_name+"_"+str(int(snp[1])+1))
+            if g1tag > g2tag :
+                reads_type="g1"
+            elif g1tag < g2tag:
+                reads_type="g2"
+            else:
+                reads_type="unk"
+    elif len(samlist["g1"])>1 and len(samlist["g2"])>1:
+        reads_type="unk"
+    elif len(samlist["g1"])==0 and len(samlist["g2"])>=1:
+        reads_type="g2only"
+    elif len(samlist["g1"])>=1 and len(samlist["g2"])==0:
+        reads_type="g1only"
+    else:
+        reads_type="unk"
+    return reads_type,supportfile
+
 
 def main():
     g1_al,g2_al,g1_s,gop1,gop2,pt,sth=getfile()
@@ -661,6 +719,25 @@ def main():
         else:
             stat_number[readt]+=2
         pairsreadswrite(samlist,readt,support,g1_g1readsfile,g1_g2readsfile,g1_unknowreadsfile,g1_g1onlyreadsfile,g2_g1readsfile,g2_g2readsfile,g2_unknowreadsfile,g2_g2onlyreadsfile,snpsupport)
+    elif pt=="Riboseq":
+        r0_name=""
+        samlist={"g1":[],"g2":[]}
+        for r in tmp_all:
+            if r0_name!=r.query_name.replace("_g1","").replace("_g2","") and r0_name!="":
+                readt,support=riboreadsphase(samlist,g1snp,g2snp,gop1,gop2)
+                readswrite(samlist,readt,support,g1_g1readsfile,g1_g2readsfile,g1_unknowreadsfile,g1_g1onlyreadsfile,g2_g1readsfile,g2_g2readsfile,g2_unknowreadsfile,g2_g2onlyreadsfile,snpsupport)
+                stat_number[readt]+=1
+                r0_name=r.query_name.replace("_g1","").replace("_g2","")
+                samlist={"g1":[],"g2":[]}
+            elif r0_name=="":
+                r0_name=r.query_name.replace("_g1","").replace("_g2","")
+            if r.query_name.find("_g1")!=-1:
+                samlist["g1"].append(r)
+            elif r.query_name.find("_g2")!=-1:
+                samlist["g2"].append(r)
+        readt,support=riboreadsphase(samlist,g1snp,g2snp,gop1,gop2)
+        stat_number[readt]+=1
+        readswrite(samlist,readt,support,g1_g1readsfile,g1_g2readsfile,g1_unknowreadsfile,g1_g1onlyreadsfile,g2_g1readsfile,g2_g2readsfile,g2_unknowreadsfile,g2_g2onlyreadsfile,snpsupport)
 
     g1_g1readsfile.close()
     g1_g2readsfile.close()
@@ -733,7 +810,8 @@ def main():
     g2onlyreads_stats=stat_number["g2only"]
     datatype={"Isoseq":"Iso-Seq (PacBio Isoform Sequence).",\
               "RNAseq":"RNA-Seq for paired-end reads.",\
-              "BSseq":"BS-Seq (Bisulfite Sequencing) for paired-end reads."}
+              "BSseq":"BS-Seq (Bisulfite Sequencing) for paired-end reads." ,\
+              "Riboseq":"Ribo-seq (Ribosome Profiling)."}
     head="""
 ==========================
 Final Phasing Reads Report

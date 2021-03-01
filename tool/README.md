@@ -7,6 +7,7 @@ phasing.py --pt=<phase_type> --g1=<genome1_alignment> --g2=<genome2_alignment>
     Type: Isoseq : Iso-Seq (PacBio Isoform Sequence) 
           RNAseq : RNA-Seq for paired-end reads 
           BSseq  : BS-Seq (Bisulfite Sequencing) for paired-end reads
+          Riboseq : Ribo-seq (Ribosome Profiling).
 
     --g1=<genome1_alignment>
     The bam/sam file that the reads aligned to first genome.
@@ -20,15 +21,18 @@ phasing.py --pt=<phase_type> --g1=<genome1_alignment> --g2=<genome2_alignment>
 
     3) The type of BS-Seq reads was used Bismark software for alignment.
      eg. bismark --bowtie2 -genome genome_index -1 query_1 -2 query_2
-    Note: Our pipeline only considers all unique mapped results in the current genomes in BS-Seq. Ambiguous reads are regarded 
-    as unmaped reads.
+     Note: Our pipeline only considers all unique mapped results in the current genomes in BS-Seq. Ambiguous reads are regarded 
+           as unmaped reads.
+    4) The type of Ribo-seq reads was used Tophat2(Bowtie2) software for alignment.
+     eg. tophat2 -N 2 -I 50000 -G gff_file/gtf_file -o prefix genome_index query
+
 
     --g2=<genome2_alignment> 
     The bam/sam file that the reads aligned to second genome.
 
     --snp=<snpfile> 
     The SNP file was obtained by mummer program which used first genome as reference genome and second genome as query genome.
-     eg. nucmer --mum --maxgap=500 --mincluster=100 --prefix=g1_g2 g1_genome.fa g1_genome.fa
+     eg. nucmer --mum --maxgap=500 --mincluster=100 --prefix=g1_g2 g1_genome.fa g2_genome.fa
          delta-filter -1 -q -r g1_g2.delta > g1_g2.filter.delta
          show-snps -C -H -I -T -r -l g1_g2.filter.delta > g1_g2.snp
 
