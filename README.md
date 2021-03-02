@@ -12,6 +12,13 @@ Require:
   5) pysam      Version:0.15.2     (https://pypi.org/project/pysam/)     
   6) SAMtools   Version:1.6        (http://samtools.sourceforge.net/)  
 
+Installation:
+
+       Note: Please confirm the required software before installation
+       git clone git@github.com:jia-wu-feng/PP2PG.git
+       cd PP2PG
+       chmod +X tool/phasing.py 
+
 ![image1](https://github.com/jia-wu-feng/PP2PG/blob/master/img/img1.png)
 
 Fig.1 The phasing pipeline based on two parental genomes (PP2PG). It mainly consists of four steps: (i) Mapping, (ii) SNP Calling, (iii) Phasing and (iv) Classification.
