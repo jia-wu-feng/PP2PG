@@ -39,6 +39,9 @@ Fig.1 The phasing pipeline based on two parental genomes (PP2PG). It mainly cons
     Note: Our pipeline only considers all unique mapped results in the current genomes in BS-Seq. Ambiguous reads are regarded 
     as unmaped reads. 
 
+4) The type of Ribo-seq reads was used Tophat2(Bowtie2) software for alignment:
+
+       tophat2 -N 2 -I 50000 -G gff_file/gtf_file -o prefix genome_index query
 
 
 2.SNP Calling:
