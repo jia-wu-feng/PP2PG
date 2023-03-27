@@ -15,7 +15,7 @@ Require:
 Installation:
 
        Note: Please confirm the required software before installation
-       git clone git@github.com:jia-wu-feng/PP2PG.git
+       git clone https://github.com/jia-wu-feng/PP2PG.git
        cd PP2PG
        chmod +X tool/phasing.py 
 
